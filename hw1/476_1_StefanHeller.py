@@ -15,12 +15,12 @@ print(data)
 data_tr = data.sample (frac = 9/10, axis = 0)
 data_tst = data.drop(dat_tr.index)
 
-data_tr_out = pd.concat(data_tr['class_Iris-setosa'], data_tr['class_Iris-versicolor'], data_tr['class_Iris-virginica'])
+data_tr_out = pd.concat([data_tr['class_Iris-setosa'], data_tr['class_Iris-versicolor'], data_tr['class_Iris-virginica']])
 del data_tr[['class_Iris-virginica'], 'class_Iris-setosa' , 'class_Iris-versicolor']
 data_tr_in = data_tr
 del data_tr
 
-data_tst_out = pd.concat(data_tst['class_Iris-setosa'], data_tst['class_Iris-versicolor'], data_tst['class_Iris-virginica'])
+data_tst_out = pd.concat([data_tst['class_Iris-setosa'], data_tst['class_Iris-versicolor'], data_tst['class_Iris-virginica']])
 del data_tst[['class_Iris-virginica'], 'class_Iris-setosa' , 'class_Iris-versicolor']
 data_tst_in = data_tst
 del data_tst
