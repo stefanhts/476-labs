@@ -12,7 +12,7 @@ data = pd.concat([pd.get_dummies (data['Class'], prefix='class'), data], axis=1)
 
 del data['Class']
 print(data)
-dat_tr = data.sample (frac = 9/10, axis = 0)
+data_tr = data.sample (frac = 9/10, axis = 0)
 data_tst = dat_tr.drop(dat_tr.index)
 
 data_tr_out = data_tr[['class_Iris-setosa', 'class_Iris-versicolor', 'class_Iris-virginica']]
