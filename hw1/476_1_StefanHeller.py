@@ -21,10 +21,10 @@ def gen_model():
 	model = Sequential()
 
 	model.add(Dense(4, input_shape=(4,), activation = 'relu'))
-	model.add(Dense(40, activation = 'sigmoid'))
+	model.add(Dense(40, activation = 'relu'))
 	model.add(Dense(40, activation = 'selu'))
 	model.add(Dense(5, activation = 'selu'))
-	model.add(Dense(1, activation = 'softmax', output_dim = 3))
+	model.add(Dense(3, activation = 'softmax'))
 
 	return model
 data = pd.concat([pd.get_dummies(data['Class'], prefix='class'), data], axis=1)
@@ -36,7 +36,7 @@ data_tr = data.sample (frac = 9/10, axis = 0)
 data_tst = data.drop(data_tr.index)
 
 a=['class_Iris-virginica', 'class_Iris-setosa' , 'class_Iris-versicolor']
-
+data_tr_out=pd.DataFrame()
 data_tr_out['setosa'] = data_tr['class_Iris-setosa']
 data_tr_out['versi'] = data_tr['class_Iris-versicolor']
 data_tr_out['virgi'] = data_tr['class_Iris-virginica']
@@ -48,7 +48,7 @@ for i in a:
 
 data_tr_in = data_tr.values
 del data_tr
-
+data_tst_out=pd.DataFrame()
 data_tst_out['setosa'] = data_tst['class_Iris-setosa']
 data_tst_out['versi'] = data_tst['class_Iris-versicolor']
 data_tst_out['virgi'] = data_tst['class_Iris-virginica']
@@ -66,7 +66,7 @@ model = gen_model()
 #train model
 model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
-model.fit(data_tst_in, data_tst_out.values, batch_size = 32, epochs = 80)
+model.fit(data_tst_in, data_tst_out.values, batch_size = 12, epochs = 500)
 
 eval = model.evaluate(data_tst_in, data_tst_out.values)
 
