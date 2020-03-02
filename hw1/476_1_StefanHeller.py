@@ -7,9 +7,11 @@ import pandas as pd
 import numpy as py
 from keras.callbacks import History
 
+#read data and one hot encoding
 data = pd.read_csv('iris.data', header = None, names = ['s_length', 's_width', 'p_length', 'p_width', 'Class' ])
 data = pd.concat([pd.get_dummies (data['Class'], prefix='class'), data], axis=1)
 
+#clean data
 del data['Class']
 print(data)
 data_tr = data.sample (frac = 9/10, axis = 0)
@@ -34,5 +36,20 @@ for i in a:
 data_tst_in = data_tst
 del data_tst
 
-print(data_tr)
-print(data_tst)
+#make model
+model = Sequential()
+
+model.add(Dense(4), 'relu')
+model.add(Dense(40), 'sigmoid')
+model.add(Dense(40), 'selu')
+model.add(Dense(5), 'selu')
+model.add(Dense(3))
+
+#train model
+model.complie(optimizer = 'adama', loss = 'msa', metrics = ['mse', 'accuracy'])
+
+model.fit(data_tst_in, data_tst_out, batch_size = 32, epochs = 80)
+
+eval = model.evaluate(data_tst_in, data_tst_out)
+
+print(eval)
