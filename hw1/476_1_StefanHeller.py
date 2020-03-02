@@ -15,3 +15,14 @@ print(data)
 dat_tr = data.sample (frac = 9/10, axis = 0)
 data_tst = dat_tr.drop(dat_tr.index)
 
+data_tr_out = data_tr[['class_Iris-setosa', 'class_Iris-versicolor', 'class_Iris-virginica']]
+data_tr_in = data.drop(data_tr_out)
+
+data_tst_out = data_tst[['class_Iris-setosa', 'class_Iris-versicolor', 'class_Iris-virginica']]
+data_tst_in = data.drop(data_tst_out)
+
+del data_tr
+del data_tst
+
+print(data_tr)
+print(data_tst)
