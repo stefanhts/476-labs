@@ -34,8 +34,5 @@ for i in a:
 data_tst_in = data_tst
 del data_tst
 
-del data_tr
-del data_tst
-
 print(data_tr)
 print(data_tst)
