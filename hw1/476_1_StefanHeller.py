@@ -37,7 +37,11 @@ data_tst = data.drop(data_tr.index)
 
 a=['class_Iris-virginica', 'class_Iris-setosa' , 'class_Iris-versicolor']
 
-data_tr_out = pd.concat([data_tr['class_Iris-setosa'], data_tr['class_Iris-versicolor'], data_tr['class_Iris-virginica']]).values
+data_tr_out['setosa'] = data_tr['class_Iris-setosa']
+data_tr_out['versi'] = data_tr['class_Iris-versicolor']
+data_tr_out['virgi'] = data_tr['class_Iris-virginica']
+
+#data_tr_out = pd.concat([data_tr['class_Iris-setosa'], data_tr['class_Iris-versicolor'], data_tr['class_Iris-virginica']]).values
 
 for i in a:
 	del data_tr[i]
@@ -45,8 +49,11 @@ for i in a:
 data_tr_in = data_tr.values
 del data_tr
 
-a=['class_Iris-virginica', 'class_Iris-setosa' , 'class_Iris-versicolor']
-data_tst_out = pd.concat([data_tst['class_Iris-setosa'], data_tst['class_Iris-versicolor'], data_tst['class_Iris-virginica']]).values
+data_tst_out['setosa'] = data_tst['class_Iris-setosa']
+data_tst_out['versi'] = data_tst['class_Iris-versicolor']
+data_tst_out['virgi'] = data_tst['class_Iris-virginica']
+
+#data_tst_out = pd.concat([data_tst['class_Iris-setosa'], data_tst['class_Iris-versicolor'], data_tst['class_Iris-virginica']]).values
 
 for i in a:
 	del data_tst[i]
@@ -59,8 +66,8 @@ model = gen_model()
 #train model
 model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
-model.fit(data_tst_in, data_tst_out, batch_size = 32, epochs = 80)
+model.fit(data_tst_in, data_tst_out.values, batch_size = 32, epochs = 80)
 
-eval = model.evaluate(data_tst_in, data_tst_out)
+eval = model.evaluate(data_tst_in, data_tst_out.values)
 
 print(eval)
