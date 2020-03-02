@@ -20,10 +20,10 @@ def gen_model():
 #make model
 	model = Sequential()
 
-	model.add(Dense(4, input_shape=(4,), activation = 'relu'))
-	model.add(Dense(40, activation = 'relu'))
-	model.add(Dense(40, activation = 'selu'))
-	model.add(Dense(5, activation = 'selu'))
+	model.add(Dense(4, input_shape=(4,), activation = 'selu'))
+	model.add(Dense(10, activation = 'selu'))
+	model.add(Dense(10, activation = 'selu'))
+	model.add(Dense(4, activation = 'selu'))
 	model.add(Dense(3, activation = 'softmax'))
 
 	return model
@@ -64,10 +64,12 @@ del data_tst
 model = gen_model()
 
 #train model
-model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
+model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['mean_absolute_error'])
 
-model.fit(data_tst_in, data_tst_out.values, batch_size = 12, epochs = 500)
+print('training...')
+model.fit(data_tst_in, data_tst_out.values, batch_size = 32, epochs = 350)
 
 eval = model.evaluate(data_tst_in, data_tst_out.values)
 
-print(eval)
+print('testing...')
+print('mean squared error:', eval[0], 'mean absolute error:', eval[1])
