@@ -19,34 +19,34 @@ data_tst = data.drop(data_tr.index)
 
 a=['class_Iris-virginica', 'class_Iris-setosa' , 'class_Iris-versicolor']
 
-data_tr_out = pd.concat([data_tr['class_Iris-setosa'], data_tr['class_Iris-versicolor'], data_tr['class_Iris-virginica']])
+data_tr_out = pd.concat([data_tr['class_Iris-setosa'], data_tr['class_Iris-versicolor'], data_tr['class_Iris-virginica']]).values
 
 for i in a:
 	del data_tr[i]
 
-data_tr_in = data_tr
+data_tr_in = data_tr.values
 del data_tr
 
 a=['class_Iris-virginica', 'class_Iris-setosa' , 'class_Iris-versicolor']
-data_tst_out = pd.concat([data_tst['class_Iris-setosa'], data_tst['class_Iris-versicolor'], data_tst['class_Iris-virginica']])
+data_tst_out = pd.concat([data_tst['class_Iris-setosa'], data_tst['class_Iris-versicolor'], data_tst['class_Iris-virginica']]).values
 
 for i in a:
 	del data_tst[i]
 
-data_tst_in = data_tst
+data_tst_in = data_tst.values
 del data_tst
 
 #make model
 model = Sequential()
 
-model.add(Dense(4), 'relu')
-model.add(Dense(40), 'sigmoid')
-model.add(Dense(40), 'selu')
-model.add(Dense(5), 'selu')
-model.add(Dense(3))
+model.add(Dense(4, activation = 'relu'))
+model.add(Dense(40, activation = 'sigmoid'))
+model.add(Dense(40, activation = 'selu'))
+model.add(Dense(5, activation = 'selu'))
+model.add(Dense(1, activation = 'softmax'))
 
 #train model
-model.complie(optimizer = 'adama', loss = 'msa', metrics = ['mse', 'accuracy'])
+model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['mse', 'accuracy'])
 
 model.fit(data_tst_in, data_tst_out, batch_size = 32, epochs = 80)
 
