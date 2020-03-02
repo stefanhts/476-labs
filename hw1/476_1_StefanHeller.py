@@ -7,9 +7,27 @@ import pandas as pd
 import numpy as py
 from keras.callbacks import History
 
+
+def read_data():
 #read data and one hot encoding
-data = pd.read_csv('iris.data', header = None, names = ['s_length', 's_width', 'p_length', 'p_width', 'Class' ])
-data = pd.concat([pd.get_dummies (data['Class'], prefix='class'), data], axis=1)
+	data = pd.read_csv('iris.data', header = None, names = ['s_length', 's_width', 'p_length', 'p_width', 'Class' ])
+	return data
+
+data = read_data()
+
+
+def gen_model():
+#make model
+	model = Sequential()
+
+	model.add(Dense(4, activation = 'relu'))
+	model.add(Dense(40, activation = 'sigmoid'))
+	model.add(Dense(40, activation = 'selu'))
+	model.add(Dense(5, activation = 'selu'))
+	model.add(Dense(1, activation = 'softmax', output_dim = 3))
+
+	return model
+data = pd.concat([pd.get_dummies(data['Class'], prefix='class'), data], axis=1)
 
 #clean data
 del data['Class']
@@ -36,14 +54,7 @@ for i in a:
 data_tst_in = data_tst.values
 del data_tst
 
-#make model
-model = Sequential()
-
-model.add(Dense(4, activation = 'relu'))
-model.add(Dense(40, activation = 'sigmoid'))
-model.add(Dense(40, activation = 'selu'))
-model.add(Dense(5, activation = 'selu'))
-model.add(Dense(1, activation = 'softmax'))
+model = gen_model()
 
 #train model
 model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['mse', 'accuracy'])
