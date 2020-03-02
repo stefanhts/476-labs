@@ -64,10 +64,11 @@ def clean_data(data):
 
 	data_tst_in = data_tst.values
 	del data_tst
+	return data_tr_in, data_tr_out, data_tst_in, data_tst_out
 
 
 #clean data, create, train, test model
-cleandata(read_data())
+data_tr_in, data_tr_out, data_tst_in, data_tst_out = clean_data(read_data())
 model = gen_model()
 model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = [categorical_accuracy])
 model.fit(data_tst_in, data_tst_out.values, batch_size = 32, epochs = 350)
