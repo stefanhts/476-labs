@@ -20,7 +20,7 @@ def gen_model():
 #make model
 	model = Sequential()
 
-	model.add(Dense(4, activation = 'relu'))
+	model.add(Dense(4, input_shape=(4,), activation = 'relu'))
 	model.add(Dense(40, activation = 'sigmoid'))
 	model.add(Dense(40, activation = 'selu'))
 	model.add(Dense(5, activation = 'selu'))
@@ -57,7 +57,7 @@ del data_tst
 model = gen_model()
 
 #train model
-model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics = ['mse', 'accuracy'])
+model.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
 model.fit(data_tst_in, data_tst_out, batch_size = 32, epochs = 80)
 
