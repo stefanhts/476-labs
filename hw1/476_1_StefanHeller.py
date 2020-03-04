@@ -7,6 +7,7 @@ from keras.metrics import categorical_accuracy
 import pandas as pd
 import numpy as py
 from keras.callbacks import History
+import matplotlib.pyplot as plt
 
 #initialize dataframes
 data_tr = pd.DataFrame()
@@ -26,11 +27,10 @@ def gen_model():
 	#make model
 	model = Sequential()
 
-	model.add(Dense(4, input_shape=(4,), activation = 'selu'))
-	model.add(Dense(10, activation = 'selu'))
-	model.add(Dense(10, activation = 'selu'))
-	model.add(Dense(4, activation = 'selu'))
-	model.add(Dense(3, activation = 'softmax'))
+	model.add(Dense(10,input_shape=(4,),activation='tanh'))
+	model.add(Dense(8,activation='tanh'))
+	model.add(Dense(6,activation='tanh'))
+	model.add(Dense(3,activation='softmax'))
 
 	return model
 
@@ -70,8 +70,16 @@ def clean_data(data):
 #clean data, create, train, test model
 data_tr_in, data_tr_out, data_tst_in, data_tst_out = clean_data(read_data())
 model = gen_model()
-model.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = [categorical_accuracy])
-model.fit(data_tst_in, data_tst_out.values, batch_size = 32, epochs = 350)
+model.compile(optimizer = Adam(lr = 0.04), loss = 'categorical_crossentropy', metrics = ['acc'])
+history = model.fit(data_tr_in, data_tr_out.values,  epochs = 80, validation_split = .1)
 eval = model.evaluate(data_tst_in, data_tst_out.values)
 
 print(eval)
+
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('Model accuracy')
+plt.ylabel('Accuracy')
+plt.xlabel('Epoch')
+plt.legend(['Train', 'Test'], loc = 'upper left')
+plt.show()
