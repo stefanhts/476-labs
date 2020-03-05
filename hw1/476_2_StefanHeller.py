@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from keras.callbacks import History
 import pandas as pd
 
+#test
 batch_size = 1024
 epochs = 6
 loss = 'categorical_crossentropy'
