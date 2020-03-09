@@ -10,22 +10,21 @@ import matplotlib.pyplot as plt
 from keras.callbacks import History
 import pandas as pd
 
-#test
-batch_size = 1024
-epochs = 6
+batch_size = 512
+epochs = 9
 loss = 'categorical_crossentropy'
 optimizers = Adam(lr = 0.001)
 metrics =['accuracy']
 
 (tr_in, tr_out), (tst_in, tst_out) = mnist.load_data()
 
-# reshape to be [samples][width][height][channels]
+# reshape
 tr_in = tr_in.reshape(tr_in.shape[0], 28, 28, 1)
 tr_in = tr_in.astype('float32')
 tst_in = tst_in.reshape(tst_in.shape[0], 28, 28, 1)
 tst_in = tst_in.astype('float32')
 
-# normalize inputs
+# normalize
 tr_in = tr_in / 255
 tst_in = tst_in / 255
 
@@ -49,7 +48,7 @@ def create_model():
     model.add(Flatten())
     model.add(Dense(20, activation = 'selu'))
     model.add(Dense(10, activation = 'softmax'))
-    # Compile model
+# Compile model
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
     return model
 
@@ -59,12 +58,5 @@ history = model.fit(tr_in, tr_out, batch_size = batch_size, epochs = epochs, val
 
 eval = model.evaluate(tst_in, tst_out)
 
-plt.plot(history.history['acc'])
-plt.plot(history.history['val_acc'])
-plt.title('Model accuracy')
-plt.ylabel('Accuracy')
-plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc = 'upper left')
-plt.show()
-
-print('categorical cross entropy loss of :',eval[0], 'Accuracy:',eval[1])
+print(model.summary())
+print("categorical cross entropy loss of :", eval[0], "Accuracy:", eval[1])
