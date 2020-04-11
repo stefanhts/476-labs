@@ -1,3 +1,4 @@
+# Stefan Heller hw2 #1
 import tensorflow
 from keras.models import Sequential
 from keras.layers import Dense
