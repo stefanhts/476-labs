@@ -6,11 +6,9 @@ import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 num_epochs = 5
 batch_size = 4
-learning_rate = 0.001
+learning_rate = 0.02
 
 transform = transforms.Compose([transforms.ToTensor()])
 
@@ -50,8 +48,6 @@ optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 n_total_steps = len(train_loader)
 for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):
-        images = images.to(device)
-        labels = labels.to(device)
         outputs = model(images)
         loss = criterion(outputs, labels)
 
@@ -70,8 +66,6 @@ with torch.no_grad():
     n_class_correct = [0 for i in range(10)]
     n_class_samples = [0 for i in range(10)]
     for i, (images, labels) in enumerate(test_loader):
-        images = images.to(device)
-        labesl = labels.to(device)
         outputs = model(images)
         _, predicted = torch.max(outputs,1)
         n_samples += labels.size(0)
