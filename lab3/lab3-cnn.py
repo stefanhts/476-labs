@@ -4,11 +4,15 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision
 import torchvision.transforms as transforms
-import matplotlib.pyplot as plt
+import datetime
 
-num_epochs = 5
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(torch.cuda.get_device_name(torch.cuda.current_device()))
+
+num_epochs = 6
 batch_size = 4
-learning_rate = 0.02
+learning_rate = 0.008
 
 transform = transforms.Compose([transforms.ToTensor()])
 
@@ -40,14 +44,16 @@ class ConvNet(nn.Module):
         x = self.fc3(x)
         return x
 
-model = ConvNet()
-
+model = ConvNet().to(device)
+start = datetime.datetime.now()
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 
 n_total_steps = len(train_loader)
 for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):
+        images = images.to(device)
+        labels = labels.to(device)
         outputs = model(images)
         loss = criterion(outputs, labels)
 
@@ -57,15 +63,17 @@ for epoch in range(num_epochs):
 
         if (i+1) % 2000 ==0:
             print(f'Epoch [{epoch+1}/{num_epochs}], Step [{i+1}/{n_total_steps}], Loss: {loss.item():.4f}')
-
+end = datetime.datetime.now()
 print('Finished training')
-
+print(end-start)
 with torch.no_grad():
     n_correct=0
     n_samples = 0
     n_class_correct = [0 for i in range(10)]
     n_class_samples = [0 for i in range(10)]
     for i, (images, labels) in enumerate(test_loader):
+        images = images.to(device)
+        labels = labels.to(device)
         outputs = model(images)
         _, predicted = torch.max(outputs,1)
         n_samples += labels.size(0)
