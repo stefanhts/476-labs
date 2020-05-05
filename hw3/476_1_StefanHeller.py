@@ -26,14 +26,20 @@ image_test = images[split:]
 ans_train = ans[:split]
 ans_test = ans[split:]
 
+image_train = image_train.reshape(-1, 3, 69, 69)
+image_train = image_train.astype('float')/255
+image_test = image_test.reshape(-1, 3, 69, 69)
+image_test = image_test.astype('float')/255
+
 image_train = torch.from_numpy(np.float32(image_train))
 image_test = torch.from_numpy(np.float32(image_test))
 ans_train = torch.from_numpy(ans_train).long()
 ans_test = torch.from_numpy(ans_test).long()
 
-image_train = image_train.view(-1, 3, 69, 69)
-image_test = image_test.view(-1, 3, 69, 69)
-
+train_data = torch.utils.data.TensorDataset(image_train, ans_train)
+train_load = torch.utils.data.DataLoader(train_data, batch_size=params['batch_size'])
+test_data = torch.utils.data.TensorDataset(image_test, ans_test)
+test_load = torch.utils.data.DataLoader(test_data, batch_size=100)
 
 class Model(nn.Module):
     def __init__(self):
@@ -78,54 +84,38 @@ def accuracy(out, pred):
     return (correct/len(pred))
 
 def train(model, train_in, train_out):
-    train_in, train_out = train_in.to(device), train_out.to(device)
-    N = train_in.size(0)
-    for epoch in range(params['epochs']):
-        for batch in tqdm(range(N // params['batch_size'])):
-            i_start = batch*params['batch_size']
-            i_end = i_start+params['batch_size']
+    epochs = params['epochs']
+    for epoch in range(epochs):
+       for i, (images,ans) in enumerate(train_load):
+           images = images.to(device)
+           ans = ans.to(device)
+           outputs = model(images)
+           loss = criterion(outputs,ans)
 
-            t_in = train_in[i_start:i_end]
-            t_out = train_out[i_start:i_end]
+           optimizer.zero_grad()
+           loss.backward()
+           optimizer.step()
+           if (i + 1) % 2000 == 0:
+               print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.6f}')
 
-            output = model(t_in)
-            loss = criterion(output, t_out)
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
 
-            if (batch+1) %16 == 0:
-                print('Epoch: {0}/{1}, loss: {2}'.format(epoch+1,params['epochs'], loss.item()))
-    print('Done training, training time: {0}'.format(dt.datetime.now() - start))
 
 def validate(model, test_in, test_out):
-    test_in, test_out = test_in.to(device), test_out.to(device)
-    print('validating...')
     with torch.no_grad():
+        n_correct = 0
+        n_samples = 0
         n_class_correct = [0 for i in range(10)]
         n_class_samples = [0 for i in range(10)]
-        n_samples = len(test_out)
-        n_correct = 0
-        for batch in range(test_in.size(0) // params['batch_size']):
-            i_start = batch*params['batch_size']
-            i_end = i_start+params['batch_size']
-
-            t_in = test_in[i_start:i_end]
-            t_out = test_out[i_start:i_end]
-
-            outputs = model(t_in)
+        for i, (images, ans) in enumerate(test_load):
+            images = images.to(device)
+            ans = ans.to(device)
+            outputs = model(images)
             _, predicted = torch.max(outputs, 1)
-            n_samples += t_out.size(0)
-            n_correct += (predicted == t_out).sum().item()
+            n_samples += ans.size(0)
+            n_correct += (predicted == ans).sum().item()
 
-            for i in range(params['batch_size']):
-                label = t_out[i]
-                pred = predicted[i]
-                if label == pred:
-                    n_class_correct[label] += 1
-                n_class_samples[label] += 1
-        acc = n_correct/n_samples
-        print(f'Accuracy of network: {acc}%')
+        acc = 100.0 * n_correct / n_samples
+        print(f'Accuracy of network: {acc} %')
 
 
 model = Model().to(device)
