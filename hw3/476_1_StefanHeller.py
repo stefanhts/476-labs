@@ -16,11 +16,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 params ={
     'learning_rate': 0.001,
     'batch_size': 128,
-    'epochs': 6,
+    'epochs': 12,
     'num_workers': 6
 }
 
-split = int(len(images) * 0.8)
+split = int(len(images) * 0.2)
+# split2 = int(len(images) * 0.4)
 image_train = images[:split]
 image_test = images[split:]
 ans_train = ans[:split]
@@ -95,7 +96,7 @@ def train(model, train_in, train_out):
            optimizer.zero_grad()
            loss.backward()
            optimizer.step()
-           if (i + 1) % 2000 == 0:
+           if (i + 1) % 20 == 0:
                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {loss.item():.6f}')
 
 
@@ -110,7 +111,7 @@ def validate(model, test_in, test_out):
             images = images.to(device)
             ans = ans.to(device)
             outputs = model(images)
-            _, predicted = torch.max(outputs, 1)
+            _, predicted = torch.max(outputs.data, 1)
             n_samples += ans.size(0)
             n_correct += (predicted == ans).sum().item()
 
