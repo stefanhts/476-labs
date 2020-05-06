@@ -14,10 +14,9 @@ ans = f['ans'][()]
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 params ={
-    'learning_rate': 0.001,
+    'learning_rate': 0.0015,
     'batch_size': 128,
-    'epochs': 12,
-    'num_workers': 6
+    'epochs': 35,
 }
 
 split = int(len(images) * 0.2)
